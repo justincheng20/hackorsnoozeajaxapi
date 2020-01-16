@@ -1,3 +1,4 @@
+
 $(async function() {
   // cache some selectors we'll be using quite a bit
   const $allStoriesList = $("#all-articles-list");
@@ -14,9 +15,9 @@ $(async function() {
 
   // global currentUser variable
   let currentUser = null;
-
+  
   await checkIfLoggedIn();
-
+  
   /**
    * Event listener for logging in.
    *  If successfully we will setup the user instance
@@ -95,7 +96,9 @@ $(async function() {
    */
 
   async function checkIfLoggedIn() {
+    
     // let's see if we're logged in
+    
     const token = localStorage.getItem("token");
     const username = localStorage.getItem("username");
 
@@ -125,7 +128,7 @@ $(async function() {
 
     // show the stories
     $allStoriesList.show();
-
+    
     // update the navigation bar
     showNavForLoggedInUser();
   }
@@ -187,6 +190,14 @@ $(async function() {
   }
 
   function showNavForLoggedInUser() {
+    let navBar = $("#nav-all");
+    let $newNavItems = $( 
+      `<ul>
+        <li>| <a href="">submit</a></li>
+        <li>| <a href="">favorites</a></li>
+        <li>| <a href=""></a>my stories</li>
+      </ul>`);
+    navBar.append($newNavItems);
     $navLogin.hide();
     $navLogOut.show();
   }
