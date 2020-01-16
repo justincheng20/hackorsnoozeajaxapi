@@ -192,16 +192,33 @@ $(async function() {
   function showNavForLoggedInUser() {
     let $navBar = $("#nav-all").parent();
     let $newNavItems = $( 
-      `<ul>
-        <li>| <a href="";>submit</a></li>
-        <li>| <a href="">favorites</a></li>
-        <li>| <a href="">my stories</a></li>
-      </ul>`);
+      `<ul class="main-nav-links">
+        <li class="main-nav-links submit">| <a id="submit-story" href="">submit</a></li>
+        <li class="main-nav-links favorites">| <a href="">favorites</a></li>
+        <li class="main-nav-links my-stories">| <a href="">my stories</a></li>
+      </ul>
+      `);
     $navBar.append($newNavItems);
-    
     $navLogin.hide();
     $navLogOut.show();
   }
+
+  // event listener for submit (enter new story details)
+  $("body").on("click", "#submit-story", async function(evt) {
+    evt.preventDefault();
+    $submitForm.show();
+  });
+ 
+  $submitForm.on("submit", async function(evt) {
+    evt.preventDefault(); // no page-refresh on submit
+
+    const author = $("#author").val();
+    const title = $("#title").val();
+    const url = $("#url").val();
+
+    let newStory = {author, title, url};
+    new StoryList().addStory(currentUser, newStory);
+  });
 
   /* simple function to pull the hostname from a URL */
 
