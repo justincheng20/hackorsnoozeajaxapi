@@ -190,14 +190,15 @@ $(async function() {
   }
 
   function showNavForLoggedInUser() {
-    let navBar = $("#nav-all");
+    let $navBar = $("#nav-all").parent();
     let $newNavItems = $( 
       `<ul>
-        <li>| <a href="">submit</a></li>
+        <li>| <a href="";>submit</a></li>
         <li>| <a href="">favorites</a></li>
-        <li>| <a href=""></a>my stories</li>
+        <li>| <a href="">my stories</a></li>
       </ul>`);
-    navBar.append($newNavItems);
+    $navBar.append($newNavItems);
+    
     $navLogin.hide();
     $navLogOut.show();
   }

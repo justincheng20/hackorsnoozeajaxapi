@@ -54,9 +54,6 @@ class StoryList {
   }
 }
 
-
-
-
 /**
  * The User class to primarily represent the current user.
  *  There are helper methods to signup (create), login, and getLoggedInUser
