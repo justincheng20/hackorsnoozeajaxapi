@@ -192,11 +192,11 @@ $(async function() {
   function showNavForLoggedInUser() {
     let $navBar = $("#nav-all").parent();
     let $newNavItems = $( 
-      `<ul class="main-nav-links">
-        <li class="main-nav-links submit">| <a id="submit-story" href="">submit</a></li>
-        <li class="main-nav-links favorites">| <a href="">favorites</a></li>
-        <li class="main-nav-links my-stories">| <a href="">my stories</a></li>
-      </ul>
+      `<span class="main-nav-links">
+        <span class="main-nav-links submit">|<a id="submit-story" href=""><small>submit</small></a></span>
+        <span class="main-nav-links favorites">|<a href=""><small>favorites</small></a></span>
+        <span class="main-nav-links my-stories">|<a href=""><small>my stories</small></a></span>
+      </span>
       `);
     $navBar.append($newNavItems);
     $navLogin.hide();
@@ -206,18 +206,23 @@ $(async function() {
   // event listener for submit (enter new story details)
   $("body").on("click", "#submit-story", async function(evt) {
     evt.preventDefault();
-    $submitForm.show();
+    $submitForm.toggle();
   });
  
   $submitForm.on("submit", async function(evt) {
-    evt.preventDefault(); // no page-refresh on submit
-
+    evt.preventDefault();
     const author = $("#author").val();
     const title = $("#title").val();
     const url = $("#url").val();
 
     let newStory = {author, title, url};
-    new StoryList().addStory(currentUser, newStory);
+    await new StoryList().addStory(currentUser, newStory);
+    
+    $submitForm.trigger('reset');
+
+    hideElements();
+    await generateStories();
+    $allStoriesList.show();
   });
 
   /* simple function to pull the hostname from a URL */
