@@ -1,4 +1,3 @@
-
 $(async function() {
   // cache some selectors we'll be using quite a bit
   const $allStoriesList = $("#all-articles-list");
@@ -16,14 +15,16 @@ $(async function() {
   // global currentUser variable
   let currentUser = null;
   
+  // togggle start icon and get story id value
   function favStar(){
-    
     $(".fa-star").on("click", function(e){
       e.target.classList.toggle("checked"); //Written is vanilla JS; will change to jQuery
-      //console.log(e.target.parentElement.getAttribute("id"));
-      currentUser.favorites.push(e.target.parentElement.getAttribute("id"));
-      console.log(currentUser.favorites);
-      localStorage.setItem("favorites", currentUser.favorites);
+
+      // TO DO write code for appending favorite(s?) to DOM 
+      generateFavoriteStoryHTML(/*input*/);
+
+      let favoriteID = user.favorites.push(e.target.parentElement.getAttribute("id"));
+      await storyList.addFavoriteStory(currentUser, favoriteID);
     });
   }
 
@@ -174,8 +175,6 @@ $(async function() {
   function generateStoryHTML(story) {
     let hostName = getHostName(story.url);
     
-   
-
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
@@ -191,6 +190,11 @@ $(async function() {
 
     return storyMarkup;
   }
+
+  // TO DO
+  function generateFavoriteStoryHTML() {
+
+  };
 
   /* hide all elements in elementsArr */
 
@@ -263,7 +267,7 @@ $(async function() {
     if (currentUser) {
       localStorage.setItem("token", currentUser.loginToken);
       localStorage.setItem("username", currentUser.username);
-     
+      localStorage.setItem("favorites", currentUser.favorites); // move this line later
     }
   }
 });

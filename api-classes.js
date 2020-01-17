@@ -49,7 +49,14 @@ class StoryList {
     return response.data;
   }
 
-  // Add functions to add favorite stories
+  // add favorite story to array and call function to append to DOM
+  async addFavoriteStory(user, favStoryId) {
+    let favorites = [];
+    
+    console.log(currentUser.favorites);
+
+
+  }
 }
 
 /**
