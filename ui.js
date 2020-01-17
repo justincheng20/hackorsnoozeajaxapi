@@ -36,7 +36,7 @@ $(async function () {
     // set the global user to the user instance
     currentUser = userInstance;
     syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
+    await loginAndSubmitForm();
   });
 
   /**
@@ -56,22 +56,21 @@ $(async function () {
     const newUser = await User.create(username, password, name);
     currentUser = newUser;
     syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
+    await loginAndSubmitForm();
   });
 
   // allows logged in users to select favorites
   function allowFavStar() {
-
-    $(".fa-star").on("click", function (e) {
+    $(".fa-star").on("click", async function (e) {
       let id = e.target.parentElement.getAttribute("id");
 
       // toggle star based on class 'checked'
       if ($(e.target).hasClass("checked")) {
         e.target.classList.toggle("checked");
-        currentUser.removeStoryFromFavorites(currentUser, id);
+        await currentUser.removeStoryFromFavorites(currentUser, id);
       } else {
         e.target.classList.toggle("checked");
-        currentUser.addStoryToFavorites(currentUser, id);
+        await currentUser.addStoryToFavorites(currentUser, id);
       }
     });
   }
@@ -150,6 +149,7 @@ $(async function () {
     if (currentUser) {
       allowFavStar();
       showNavForLoggedInUser();
+      generateFavoriteStoryHTML(); 
     }
   }
 
@@ -157,7 +157,7 @@ $(async function () {
    * A rendering function to run to reset the forms and hide the login info
    */
 
-  function loginAndSubmitForm() {
+  async function loginAndSubmitForm() {
     // hide the forms for logging in and signing up
     $loginForm.hide();
     $createAccountForm.hide();
@@ -170,9 +170,10 @@ $(async function () {
     $allStoriesList.show();
 
     // allow favoriting and update navigation bar
+    await generateStories();
     allowFavStar();
-    generateStories();
     showNavForLoggedInUser();
+    generateFavoriteStoryHTML();
   }
 
   /**
@@ -217,9 +218,9 @@ $(async function () {
     return storyMarkup;
   }
 
-  // TO DO
   function generateFavoriteStoryHTML() {
-
+    let favorites = currentUser.favorites;
+    console.log(currentUser.favorites);
   };
 
   /* hide all elements in elementsArr */
@@ -241,7 +242,7 @@ $(async function () {
     let $newNavItems = $(
       `<span class="main-nav-links">
         <span class="main-nav-links submit">|<a id="submit-story" href=""><small>submit</small></a></span>
-        <span class="main-nav-links favorites">|<a href=""><small>favorites</small></a></span>
+        <span class="main-nav-links favorites">|<a id="favorite-stories"><small>favorites</small></a></span>
         <span class="main-nav-links my-stories">|<a href=""><small>my stories</small></a></span>
       </span>
       `);
@@ -249,6 +250,8 @@ $(async function () {
     $navLogin.hide();
     $navLogOut.show();
   }
+
+  // MAIN NAV BAR EVENT HANDLERS //
 
   // event listener for submit (enter new story details)
   $("body").on("click", "#submit-story", async function (evt) {
@@ -270,6 +273,13 @@ $(async function () {
     hideElements();
     await generateStories();
     $allStoriesList.show();
+  });
+
+  // event listener for favorites (enter new story details)
+  $("body").on("click", "#favorite-stories", async function (evt) {
+    evt.preventDefault();
+    hideElements();
+    $filteredArticles.show()
   });
 
   /* simple function to pull the hostname from a URL */

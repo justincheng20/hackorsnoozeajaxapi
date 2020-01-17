@@ -1,7 +1,8 @@
 const BASE_URL = "https://hack-or-snooze-v3.herokuapp.com";
 
 /**
- * This class maintains the list of individual Story instances
+ * This class 
+ * tains the list of individual Story instances
  *  It also has some methods for fetching, adding, and removing stories
  */
 
@@ -150,15 +151,13 @@ class User {
   async addStoryToFavorites(user,storyID){
     const params = {token: user.loginToken};
     await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, params);
-  //  console.log(user.favorites);
   }
 
   async removeStoryFromFavorites(user,storyID){
     const headers = {};
     const params = {token: user.loginToken};
     let response = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`,{headers, params});
-    // console.log(response);
-    // console.log(user.favorites);
+    
   }
 }
 
