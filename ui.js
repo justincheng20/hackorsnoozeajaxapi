@@ -16,32 +16,21 @@ $(async function() {
   let currentUser = null;
   
   // togggle start icon and get story id value
-  function favStar(){
-    $(".fa-star").on("click", function(e){
-      e.target.classList.toggle("checked"); //Written is vanilla JS; will change to jQuery
-
-      // TO DO write code for appending favorite(s?) to DOM 
-      generateFavoriteStoryHTML(/*input*/);
-
-      let favoriteID = user.favorites.push(e.target.parentElement.getAttribute("id"));
-      await storyList.addFavoriteStory(currentUser, favoriteID);
-    });
-  }
-
+  
   await checkIfLoggedIn();
   
   /**
    * Event listener for logging in.
    *  If successfully we will setup the user instance
    */
-
+  
   $loginForm.on("submit", async function(evt) {
     evt.preventDefault(); // no page-refresh on submit
-
+    
     // grab the username and password
     const username = $("#login-username").val();
     const password = $("#login-password").val();
-
+    
     // call the login static method to build a user instance
     const userInstance = await User.login(username, password);
     // set the global user to the user instance
@@ -49,42 +38,77 @@ $(async function() {
     syncCurrentUserToLocalStorage();
     loginAndSubmitForm();
   });
-
+  
   /**
    * Event listener for signing up.
    *  If successfully we will setup a new user instance
    */
-
+  
   $createAccountForm.on("submit", async function(evt) {
     evt.preventDefault(); // no page refresh
-
+    
     // grab the required fields
     let name = $("#create-account-name").val();
     let username = $("#create-account-username").val();
     let password = $("#create-account-password").val();
-
+    
     // call the create method, which calls the API and then builds a new user instance
     const newUser = await User.create(username, password, name);
     currentUser = newUser;
     syncCurrentUserToLocalStorage();
     loginAndSubmitForm();
   });
+  
+  function allowFavStar(){
+    $(".fa-star").on("click", function(e){
+      let id = e.target.parentElement.getAttribute("id");
+      if (!$(e.target).hasClass("checked")){
+        e.target.classList.toggle("checked"); 
+        currentUser.addStoryToFavorites(currentUser,id);
+      }
+      else{
+        e.target.classList.toggle("checked");
+        currentUser.removeStoryFromFavorites(currentUser,id);
+        }
+    });
+  }
 
+  function writeStarHTML(id){
+    let favIDs = renderFavorites();
+    if (favIDs.includes(id)){
+      return `<span class="fa fa-star checked"></span>"`;
+    }
+    else{
+      return `<span class="fa fa-star"></span>"`;
+    };
+  }
+
+  function renderFavorites(){
+    if (currentUser === null){
+      return [];
+    }
+    let arr = [];
+    for (key in currentUser.favorites){
+      arr.push(currentUser.favorites[key].storyId)
+    }
+    return arr;
+    
+  };
   /**
    * Log Out Functionality
    */
-
+  
   $navLogOut.on("click", function() {
     // empty out local storage
     localStorage.clear();
     // refresh the page, clearing memory
     location.reload();
   });
-
+  
   /**
    * Event Handler for Clicking Login
    */
-
+  
   $navLogin.on("click", function() {
     // Show the Login and Create Account Forms
     $loginForm.slideToggle();
@@ -122,7 +146,7 @@ $(async function() {
     await generateStories();
     
     if (currentUser) {
-      favStar();
+      allowFavStar();
       showNavForLoggedInUser();
     }
   }
@@ -178,7 +202,7 @@ $(async function() {
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
-        <span class="fa fa-star"></span>
+        ${writeStarHTML(story.storyId)}
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -267,7 +291,8 @@ $(async function() {
     if (currentUser) {
       localStorage.setItem("token", currentUser.loginToken);
       localStorage.setItem("username", currentUser.username);
-      localStorage.setItem("favorites", currentUser.favorites); // move this line later
     }
   }
+
+  
 });

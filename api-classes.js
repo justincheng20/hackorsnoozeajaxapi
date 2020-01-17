@@ -159,6 +159,20 @@ class User {
     existingUser.ownStories = response.data.user.stories.map(s => new Story(s));
     return existingUser;
   }
+
+  async addStoryToFavorites(user,storyID){
+    const params = {token: user.loginToken};
+    await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, params);
+   console.log(user.favorites);
+  }
+
+  async removeStoryFromFavorites(user,storyID){
+    const headers = {};
+    const params = {token: user.loginToken};
+    let response = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`,{headers, params});
+    console.log(response);
+    console.log(user.favorites);
+  }
 }
 
 /**
