@@ -61,7 +61,7 @@ $(async function () {
 
   // allows logged in users to select favorites
   function allowFavStar() {
-    console.log('test functiuon allowFavStar');
+
     $(".fa-star").on("click", function (e) {
       let id = e.target.parentElement.getAttribute("id");
 
@@ -83,13 +83,16 @@ $(async function () {
   }
 
   function renderFavorites() {
+    
     if (currentUser) {
       let arr = [];
       for (key in currentUser.favorites) {
         arr.push(currentUser.favorites[key].storyId)
       }
+
       return arr;
     }
+    
     return [];
   };
 
@@ -141,6 +144,7 @@ $(async function () {
     //  to get an instance of User with the right details
     //  this is designed to run once, on page load
     currentUser = await User.getLoggedInUser(token, username);
+    
     await generateStories();
 
     if (currentUser) {
@@ -167,6 +171,7 @@ $(async function () {
 
     // allow favoriting and update navigation bar
     allowFavStar();
+    generateStories();
     showNavForLoggedInUser();
   }
 
@@ -196,7 +201,6 @@ $(async function () {
 
   function generateStoryHTML(story) {
     let hostName = getHostName(story.url);
-
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
