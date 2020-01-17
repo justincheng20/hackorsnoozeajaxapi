@@ -9,13 +9,24 @@ $(async function() {
   const $ownStories = $("#my-articles");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
-
+  
   // global storyList variable
   let storyList = null;
-
+  
   // global currentUser variable
   let currentUser = null;
   
+  function favStar(){
+    
+    $(".fa-star").on("click", function(e){
+      e.target.classList.toggle("checked"); //Written is vanilla JS; will change to jQuery
+      //console.log(e.target.parentElement.getAttribute("id"));
+      currentUser.favorites.push(e.target.parentElement.getAttribute("id"));
+      console.log(currentUser.favorites);
+      localStorage.setItem("favorites", currentUser.favorites);
+    });
+  }
+
   await checkIfLoggedIn();
   
   /**
@@ -90,6 +101,7 @@ $(async function() {
     $allStoriesList.show();
   });
 
+
   /**
    * On page load, checks local storage to see if the user is already logged in.
    * Renders page information accordingly.
@@ -107,8 +119,9 @@ $(async function() {
     //  this is designed to run once, on page load
     currentUser = await User.getLoggedInUser(token, username);
     await generateStories();
-
+    
     if (currentUser) {
+      favStar();
       showNavForLoggedInUser();
     }
   }
@@ -151,18 +164,22 @@ $(async function() {
       const result = generateStoryHTML(story);
       $allStoriesList.append(result);
     }
-  }
 
+  }
+  
   /**
    * A function to render HTML for an individual Story instance
    */
-
+  
   function generateStoryHTML(story) {
     let hostName = getHostName(story.url);
+    
+   
 
     // render story markup
     const storyMarkup = $(`
       <li id="${story.storyId}">
+        <span class="fa fa-star"></span>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -246,6 +263,7 @@ $(async function() {
     if (currentUser) {
       localStorage.setItem("token", currentUser.loginToken);
       localStorage.setItem("username", currentUser.username);
+     
     }
   }
 });

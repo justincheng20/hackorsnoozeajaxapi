@@ -48,6 +48,8 @@ class StoryList {
     let response = await axios.post(`${BASE_URL}/stories`, params);
     return response.data;
   }
+
+  // Add functions to add favorite stories
 }
 
 /**
