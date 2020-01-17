@@ -19,10 +19,6 @@ class StoryList {
    *  - returns the StoryList instance.*
    */
 
-  // TODO: Note the presence of `static` keyword: this indicates that getStories
-  // is **not** an instance method. Rather, it is a method that is called on the
-  // class directly. Why doesn't it make sense for getStories to be an instance method?
-
   static async getStories() {
     // query the /stories endpoint (no auth required)
     const response = await axios.get(`${BASE_URL}/stories`);
@@ -47,15 +43,6 @@ class StoryList {
     const params = {token: user.loginToken, story: newStory};
     let response = await axios.post(`${BASE_URL}/stories`, params);
     return response.data;
-  }
-
-  // add favorite story to array and call function to append to DOM
-  async addFavoriteStory(user, favStoryId) {
-    let favorites = [];
-    
-    console.log(currentUser.favorites);
-
-
   }
 }
 
@@ -163,15 +150,15 @@ class User {
   async addStoryToFavorites(user,storyID){
     const params = {token: user.loginToken};
     await axios.post(`${BASE_URL}/users/${user.username}/favorites/${storyID}`, params);
-   console.log(user.favorites);
+  //  console.log(user.favorites);
   }
 
   async removeStoryFromFavorites(user,storyID){
     const headers = {};
     const params = {token: user.loginToken};
     let response = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`,{headers, params});
-    console.log(response);
-    console.log(user.favorites);
+    // console.log(response);
+    // console.log(user.favorites);
   }
 }
 
