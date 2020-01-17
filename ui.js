@@ -62,6 +62,7 @@ $(async function () {
   // allows logged in users to select favorites
   function allowFavStar() {
     $(".fa-star").on("click", async function (e) {
+      console.log("Event is run");
       let id = e.target.parentElement.getAttribute("id");
 
       // toggle star based on class 'checked'
@@ -120,6 +121,7 @@ $(async function () {
   $("body").on("click", "#nav-all", async function () {
     hideElements();
     await generateStories();
+    allowFavStar();
     $allStoriesList.show();
   });
 
@@ -143,7 +145,7 @@ $(async function () {
     await generateStories();
 
     if (currentUser) {
-      allowFavStar();
+      
       showNavForLoggedInUser();
       generateFavoriteStories(); 
     }
@@ -167,7 +169,7 @@ $(async function () {
 
     // allow favoriting and update navigation bar
     await generateStories();
-    allowFavStar();
+    
     showNavForLoggedInUser();
     generateFavoriteStories();
   }
@@ -215,12 +217,13 @@ $(async function () {
   }
 
   function generateFavoriteStories() {
-
-    // let favorites = currentUser.favorites;
+    $filteredArticles.empty();
+   
      for (let favorite of currentUser.favorites) {
       const result = generateStoryHTML(favorite);
       $filteredArticles.append(result);
     };
+   allowFavStar();
   };
 
   /* hide all elements in elementsArr */
@@ -279,6 +282,7 @@ $(async function () {
   $("body").on("click", "#favorite-stories", async function (evt) {
     evt.preventDefault();
     hideElements();
+    allowFavStar();
     $filteredArticles.show()
   });
 
