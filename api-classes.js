@@ -29,8 +29,10 @@ class StoryList {
 
     // build an instance of our own class using the new array of stories
     const storyList = new StoryList(stories);
+    console.log(storyList);
     return storyList;
   }
+
 
   /**
    * Method to make a POST request to /stories and add the new story to the list
@@ -156,8 +158,7 @@ class User {
   async removeStoryFromFavorites(user,storyID){
     const headers = {};
     const params = {token: user.loginToken};
-    let response = await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`,{headers, params});
-    
+    await axios.delete(`${BASE_URL}/users/${user.username}/favorites/${storyID}`,{headers, params});
   }
 }
 

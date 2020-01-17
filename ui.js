@@ -75,24 +75,20 @@ $(async function () {
     });
   }
 
-  // maintains stared articles (home page)
+  // maintains starred articles (home page)
   function writeStarHTML(id) {
     let favIDs = renderFavorites();
     if (favIDs.includes(id)) return "checked";
   }
 
+  // creates array of favorite story ids
   function renderFavorites() {
-    
     if (currentUser) {
-      let arr = [];
-      for (key in currentUser.favorites) {
-        arr.push(currentUser.favorites[key].storyId)
-      }
-
-      return arr;
-    }
-    
-    return [];
+      let favoriteIds = [];
+      for (storyObj in currentUser.favorites) {
+        favoriteIds.push(currentUser.favorites[storyObj].storyId)
+      } return favoriteIds;
+    } return [];
   };
 
   /**
@@ -149,7 +145,7 @@ $(async function () {
     if (currentUser) {
       allowFavStar();
       showNavForLoggedInUser();
-      generateFavoriteStoryHTML(); 
+      generateFavoriteStories(); 
     }
   }
 
@@ -173,7 +169,7 @@ $(async function () {
     await generateStories();
     allowFavStar();
     showNavForLoggedInUser();
-    generateFavoriteStoryHTML();
+    generateFavoriteStories();
   }
 
   /**
@@ -218,9 +214,13 @@ $(async function () {
     return storyMarkup;
   }
 
-  function generateFavoriteStoryHTML() {
-    let favorites = currentUser.favorites;
-    console.log(currentUser.favorites);
+  function generateFavoriteStories() {
+
+    // let favorites = currentUser.favorites;
+     for (let favorite of currentUser.favorites) {
+      const result = generateStoryHTML(favorite);
+      $filteredArticles.append(result);
+    };
   };
 
   /* hide all elements in elementsArr */
