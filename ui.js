@@ -148,6 +148,7 @@ $(async function () {
     if (currentUser) {
       showNavForLoggedInUser();
       generateFavoriteStories();
+      generateMyStories();
       allowFavStar();
     }
   }
@@ -171,7 +172,8 @@ $(async function () {
     // allow favoriting and update navigation bar
     await generateStories();
     showNavForLoggedInUser();
-    generateFavoriteStories();
+    generateFavoriteStories();    
+    generateMyStories();
     allowFavStar();
   }
 
@@ -205,6 +207,7 @@ $(async function () {
     const storyMarkup = $(`
       <li id="${story.storyId}">
         <span class="fa fa-star ${writeStarHTML(story.storyId)}"></span>
+        <span class="fa fa-trash hidden"></span>
         <a class="article-link" href="${story.url}" target="a_blank">
           <strong>${story.title}</strong>
         </a>
@@ -224,8 +227,15 @@ $(async function () {
       const result = generateStoryHTML(favorite);
       $filteredArticles.append(result);
     };
-    
-    console.log("event listener is added on generate favorite stories");
+  };
+
+  function generateMyStories() {
+    $ownStories.empty();
+
+    for (let story of currentUser.ownStories) {
+      const result = generateStoryHTML(story);
+      $ownStories.append(result);
+    };
   };
 
   /* hide all elements in elementsArr */
@@ -250,7 +260,7 @@ $(async function () {
           <small>submit</small>
         </a>|<a id="favorite-stories">
           <small>favorites</small>
-        </a>|<a href="">
+        </a>|<a id="my-stories">
           <small>my stories</small></a>
       </span>
       `);
@@ -283,13 +293,24 @@ $(async function () {
     $allStoriesList.show();
   });
 
-  // event listener for favorites (enter new story details)
+  // event listener for favorites
   $("body").on("click", "#favorite-stories", async function (evt) {
     evt.preventDefault();
     hideElements();
     //allowFavStar();
     //console.log("event listener is added on favorite stories click");
     $filteredArticles.show()
+    $('.fa-trash').hide();
+  });
+
+   // event listener for my stories
+   $("body").on("click", "#my-stories", async function (evt) {
+    evt.preventDefault();
+    hideElements();
+    //allowFavStar();
+    //console.log("event listener is added on favorite stories click");
+    $ownStories.show()
+    $('.fa-trash').show();
   });
 
   /* simple function to pull the hostname from a URL */
