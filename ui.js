@@ -61,7 +61,7 @@ $(async function () {
 
   // allows logged in users to select favorites
   function allowFavStar() {
-    $(".fa-star").on("click", async function (e) {
+    $(".fa-star").off().on("click", async function (e) {
       console.log("Event is run");
       let id = e.target.parentElement.getAttribute("id");
 
@@ -122,6 +122,7 @@ $(async function () {
     hideElements();
     await generateStories();
     allowFavStar();
+    console.log("event listener is added on nav all click");
     $allStoriesList.show();
   });
 
@@ -141,13 +142,13 @@ $(async function () {
     //  to get an instance of User with the right details
     //  this is designed to run once, on page load
     currentUser = await User.getLoggedInUser(token, username);
-    
+
     await generateStories();
 
     if (currentUser) {
-      
       showNavForLoggedInUser();
-      generateFavoriteStories(); 
+      generateFavoriteStories();
+      allowFavStar();
     }
   }
 
@@ -169,9 +170,9 @@ $(async function () {
 
     // allow favoriting and update navigation bar
     await generateStories();
-    
     showNavForLoggedInUser();
     generateFavoriteStories();
+    allowFavStar();
   }
 
   /**
@@ -218,12 +219,13 @@ $(async function () {
 
   function generateFavoriteStories() {
     $filteredArticles.empty();
-   
-     for (let favorite of currentUser.favorites) {
+
+    for (let favorite of currentUser.favorites) {
       const result = generateStoryHTML(favorite);
       $filteredArticles.append(result);
     };
-   allowFavStar();
+    
+    console.log("event listener is added on generate favorite stories");
   };
 
   /* hide all elements in elementsArr */
@@ -244,9 +246,12 @@ $(async function () {
     let $navBar = $("#nav-all").parent();
     let $newNavItems = $(
       `<span class="main-nav-links">
-        <span class="main-nav-links submit">|<a id="submit-story" href=""><small>submit</small></a></span>
-        <span class="main-nav-links favorites">|<a id="favorite-stories"><small>favorites</small></a></span>
-        <span class="main-nav-links my-stories">|<a href=""><small>my stories</small></a></span>
+        |<a id="submit-story">
+          <small>submit</small>
+        </a>|<a id="favorite-stories">
+          <small>favorites</small>
+        </a>|<a href="">
+          <small>my stories</small></a>
       </span>
       `);
     $navBar.append($newNavItems);
@@ -282,7 +287,8 @@ $(async function () {
   $("body").on("click", "#favorite-stories", async function (evt) {
     evt.preventDefault();
     hideElements();
-    allowFavStar();
+    //allowFavStar();
+    //console.log("event listener is added on favorite stories click");
     $filteredArticles.show()
   });
 
